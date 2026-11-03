@@ -1,0 +1,33 @@
+services:
+  jenkins:
+    build: .
+    container_name: jenkins
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  agent:
+    image: jenkins/inbound-agent:latest-jdk21
+    container_name: jenkins-agent
+    depends_on:
+      - jenkins
+    environment:
+      JENKINS_URL: http://jenkins:8080
+      JENKINS_AGENT_NAME: docker-agent
+      JENKINS_SECRET: ${JENKINS_SECRET}
+      JENKINS_AGENT_WORKDIR: /home/jenkins/agent
+    volumes:
+      - agent_work:/home/jenkins/agent
+    restart: unless-stopped
+    profiles: ["agent"]
+
+volumes:
+  jenkins_home:
+  agent_work:
