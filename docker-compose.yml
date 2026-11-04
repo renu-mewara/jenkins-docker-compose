@@ -15,6 +15,7 @@ services:
 
   agent:
     build: ./agent
+    image: exp-tools-inbound-agent:jdk25
     container_name: jenkins-agent
     depends_on:
       - jenkins
