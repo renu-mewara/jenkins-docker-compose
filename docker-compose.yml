@@ -14,8 +14,7 @@ services:
     restart: unless-stopped
 
   agent:
-    build: ./agent
-    image: exp-tools-inbound-agent:jdk25
+    image: ghcr.io/renu-mewara/exp-tools-inbound-agent:jdk25
     container_name: jenkins-agent
     depends_on:
       - jenkins
